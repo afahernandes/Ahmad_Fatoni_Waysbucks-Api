@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   topping.init({
-    id: DataTypes.INTEGER,
     name: DataTypes.STRING,
     price: DataTypes.INTEGER,
     image: DataTypes.STRING,

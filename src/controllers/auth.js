@@ -1,13 +1,6 @@
-// import model
 const { user } = require("../../models");
-
-// import joi validation
 const Joi = require("joi");
-
-// import bcrypt
 const bcrypt = require("bcrypt");
-
-// import jwt
 const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
