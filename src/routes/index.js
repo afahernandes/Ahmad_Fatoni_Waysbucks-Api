@@ -2,12 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const {getTodos, getTodoById, addTodo,updateTodo,deleteTodo}=require('../controllers/todo');
-
-router.get('/todos',getTodos)
-router.get('/todos/:id',getTodoById)
-router.post('/todo',addTodo)
-router.patch('/todo/:id',updateTodo)
-router.delete('/todo/:id',deleteTodo)
+const {addUsers} =require('../controllers/user');
+router.post('/user',addUsers)
 
 module.exports =router;
