@@ -1,8 +1,8 @@
-const { user } = require("../../models");
+const { topping } = require("../../models");
 
-exports.addUsers = async (req, res) => {
+exports.addTopping = async (req, res) => {
   try {
-    await user.create(req.body);
+    await topping.create(req.body);
     res.send({
       status: "success",
     });
@@ -13,9 +13,9 @@ exports.addUsers = async (req, res) => {
   }
 };
 
-exports.getUsers = async (req, res) => {
+exports.getToppings = async (req, res) => {
   try {
-    const users = await user.findAll({
+    const toppings = await topping.findAll({
       attributes: {
         exclude: ["password", "createdAt", "updatedAt"],
       },
@@ -23,7 +23,7 @@ exports.getUsers = async (req, res) => {
 
     res.send({
       status: "success",
-      data : { users,},
+      data : { toppings,},
     });
   } catch (error) {
     res.status(500).send({
@@ -32,10 +32,10 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-exports.getUser = async (req, res) => {
+exports.getTopping = async (req, res) => {
   const { id } = req.params;
   try {
-    const users = await user.findOne({
+    const toppings = await topping.findOne({
       where: {
         id,
       },
@@ -46,7 +46,7 @@ exports.getUser = async (req, res) => {
 
     res.send({
       status: "success",
-      data : {users},
+      data : {toppings},
     });
   } catch (error) {
     res.status(500).send({
@@ -55,11 +55,11 @@ exports.getUser = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateTopping = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await user.update(req.body, {
+    await topping.update(req.body, {
       where: {
         id,
       },
@@ -77,11 +77,11 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-exports.deleteUser = async (req, res) => {
+exports.deleteTopping = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await user.destroy({
+    await topping.destroy({
       where: {
         id,
       },
@@ -95,7 +95,6 @@ exports.deleteUser = async (req, res) => {
     console.log(error);
     res.send({
       status: "failed",
-      status: "Server Error",
     });
   }
 };
