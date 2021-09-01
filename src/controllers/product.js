@@ -7,6 +7,7 @@ exports.addPrduct = async (req, res) => {
       status: "success",
     });
   } catch (error) {
+    console.log(error)
     res.status(500).send({
       status: "failed",
     });
@@ -17,7 +18,7 @@ exports.getProducts = async (req, res) => {
   try {
     const products = await product.findAll({
       attributes: {
-        exclude: ["password", "createdAt", "updatedAt"],
+        exclude: ["idUser", "createdAt", "updatedAt"],
       },
     });
 
@@ -40,7 +41,7 @@ exports.getProduct = async (req, res) => {
         id,
       },
       attributes: {
-        exclude: ["password", "createdAt", "updatedAt"],
+        exclude: ["idUser", "createdAt", "updatedAt"],
       },
     });
 

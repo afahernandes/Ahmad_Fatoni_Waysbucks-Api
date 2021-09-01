@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      topping.belongsTo(models.user, {
+        foreignKey: 'idUser'
+      });
     }
   };
   topping.init({

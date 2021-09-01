@@ -17,7 +17,7 @@ exports.getToppings = async (req, res) => {
   try {
     const toppings = await topping.findAll({
       attributes: {
-        exclude: ["password", "createdAt", "updatedAt"],
+        exclude: ["idUser", "createdAt", "updatedAt"],
       },
     });
 
@@ -40,7 +40,7 @@ exports.getTopping = async (req, res) => {
         id,
       },
       attributes: {
-        exclude: ["password", "createdAt", "updatedAt"],
+        exclude: ["idUser", "createdAt", "updatedAt"],
       },
     });
 
