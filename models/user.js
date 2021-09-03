@@ -7,9 +7,27 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {  
-      user.hasMany(models.product);
-      user.hasMany(models.topping);
+    static associate(models) {   
+    //hasMany to product model
+    user.hasMany(models.product, {
+      as: "products",
+      foreignKey: {
+        name: "idUser",
+      },  
+    });
+    user.hasMany(models.topping, {
+      as: "toppings",
+      foreignKey: {
+        name: "idUser",
+      },  
+    });
+    user.hasMany(models.transaction, {
+      as: "transactions",
+      foreignKey: {
+        name: "idUser",
+      },  
+    });
+    
     }
   }
   user.init(
@@ -18,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       image: DataTypes.STRING,
-      status: DataTypes.STRING,
+      role: DataTypes.STRING,
     },
     {
       sequelize,

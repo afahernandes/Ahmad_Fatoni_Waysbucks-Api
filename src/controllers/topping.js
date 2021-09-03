@@ -2,9 +2,19 @@ const { topping } = require("../../models");
 
 exports.addTopping = async (req, res) => {
   try {
-    await topping.create(req.body);
+
+    const {body} = req;
+		const idUser = req.user.id;
+    
+    const newTopping = await topping.create({
+      ...body,
+      idUser: idUser,
+      image: req.file.filename,
+    });
+
     res.send({
       status: "success",
+      data : {newTopping}
     });
   } catch (error) {
     res.status(500).send({
@@ -23,9 +33,10 @@ exports.getToppings = async (req, res) => {
 
     res.send({
       status: "success",
-      data : { toppings,},
+      data: { toppings },
     });
   } catch (error) {
+    console.log(error)
     res.status(500).send({
       status: "failed get resources",
     });
@@ -65,14 +76,23 @@ exports.updateTopping = async (req, res) => {
       },
     });
 
+    let toppings = await topping.findOne({
+      where: {
+        id,
+      },
+      attributes: {
+        exclude: ["idUser", "createdAt", "updatedAt"],
+      },
+    });
+
     res.send({
       status: 'success',
-      id: id,
+      data: {toppings},
     });
   } catch (error) {
     console.log(error);
-    res.send({
-      status: "Server Error",
+    res.status(500).send({
+      status: "failed",
     });
   }
 };

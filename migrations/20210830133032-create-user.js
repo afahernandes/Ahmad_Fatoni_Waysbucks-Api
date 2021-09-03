@@ -20,7 +20,7 @@ module.exports = {
       image: {
         type: Sequelize.STRING
       },
-      status: {
+      role: {
         type: Sequelize.STRING
       },
       createdAt: {

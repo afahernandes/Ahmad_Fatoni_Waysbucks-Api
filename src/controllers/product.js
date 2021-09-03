@@ -2,12 +2,21 @@ const { product } = require("../../models");
 
 exports.addPrduct = async (req, res) => {
   try {
-    await product.create(req.body);
+    const { body } = req;
+    const userId = req.user.id;
+
+    const newProduct = await product.create({
+      ...body,
+      idUser: userId,
+      image: req.file.filename,
+    });
+
     res.send({
       status: "success",
+      data: { newProduct },
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).send({
       status: "failed",
     });
@@ -24,7 +33,7 @@ exports.getProducts = async (req, res) => {
 
     res.send({
       status: "success",
-      data : { products,},
+      data: { products },
     });
   } catch (error) {
     res.status(500).send({
@@ -47,7 +56,7 @@ exports.getProduct = async (req, res) => {
 
     res.send({
       status: "success",
-      data : {products},
+      data: { products },
     });
   } catch (error) {
     res.status(500).send({
@@ -66,9 +75,17 @@ exports.updateProduct = async (req, res) => {
       },
     });
 
+    let products = await product.findOne({
+      where: {
+        id,
+      },
+      attributes: {
+        exclude: ["idUser", "createdAt", "updatedAt"],
+      },
+    });
     res.send({
-      status: 'success',
-      id: id,
+      status: "success",
+      prduct: { products },
     });
   } catch (error) {
     console.log(error);

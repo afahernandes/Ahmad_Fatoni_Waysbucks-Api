@@ -11,8 +11,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       topping.belongsTo(models.user, {
-        foreignKey: 'idUser'
+        as: "users",
+        foreignKey: {
+          name: "idUser",
+        },  
       });
+
+      topping.hasMany(models.toppingorder, {
+        as: "toppingorders",
+        foreignKey: {
+          name: "idTopping",
+        },  
+      });
+
     }
   };
   topping.init({

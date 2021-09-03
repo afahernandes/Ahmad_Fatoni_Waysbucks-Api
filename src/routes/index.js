@@ -2,27 +2,40 @@ const express = require('express');
 
 const router = express.Router();
 
-const {addUsers,getUsers,getUser,updateUser,deleteUser} =require('../controllers/user');
-router.post('/user',addUsers)
+const { auth,authAdmin } = require('../middlewares/auth')
+const { uploadFile } = require('../middlewares/uploadFile');
+
+const {login ,register}=require('../controllers/auth');
+const {getUsers,getUser,updateUser,deleteUser} =require('../controllers/user');
+const {addPrduct,getProducts,getProduct,updateProduct,deleteProduct} =require('../controllers/product');
+const {addTopping,getToppings,getTopping,updateTopping,deleteTopping} =require('../controllers/topping');
+const {addTransaction,getTransactions,getTransaction,getUserTransaction,updateTransaction,deleteTransaction} =require('../controllers/transaction');
+
+router.post('/login',login);
+router.post('/register',register);
+
 router.get('/users',getUsers)
 router.get('/user/:id',getUser)
 router.put('/user/:id',updateUser)
 router.delete('/user/:id',deleteUser)
 
-const {addPrduct,getProducts,getProduct,updateProduct,deleteProduct} =require('../controllers/product');
-router.post('/product',addPrduct)
+router.post('/product', authAdmin,uploadFile('image'),addPrduct)
 router.get('/products',getProducts)
 router.get('/product/:id',getProduct)
-router.put('/product/:id',updateProduct)
-router.delete('/product/:id',deleteProduct)
+router.put('/product/:id',authAdmin,updateProduct)
+router.delete('/product/:id',authAdmin,deleteProduct)
 
-const {addTopping,getToppings,getTopping,updateTopping,deleteTopping} =require('../controllers/topping');
-router.post('/topping',addTopping)
+router.post('/topping',authAdmin,uploadFile('image'),addTopping)
 router.get('/toppings',getToppings)
 router.get('/topping/:id',getTopping)
-router.put('/topping/:id',updateTopping)
-router.delete('/topping/:id',deleteTopping)
+router.put('/topping/:id',authAdmin,updateTopping)
+router.delete('/topping/:id',authAdmin,deleteTopping)
 
-
+router.post('/transaction',auth,addTransaction)
+router.get('/transactions',getTransactions)
+router.get('/transaction/:id',getTransaction)
+router.get('/cart/',auth,getUserTransaction)
+router.put('/transaction/:id',auth,uploadFile('attachment'),updateTransaction)
+router.delete('/transaction/:id',auth,deleteTransaction)
 
 module.exports =router;
