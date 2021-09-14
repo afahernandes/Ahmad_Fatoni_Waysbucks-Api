@@ -24,16 +24,24 @@ exports.addTopping = async (req, res) => {
 };
 
 exports.getToppings = async (req, res) => {
-  try {
+  const path = process.env.PATH_FILE
+  try { 
     const toppings = await topping.findAll({
       attributes: {
         exclude: ["idUser", "createdAt", "updatedAt"],
       },
     });
 
+    let data = JSON.parse(JSON.stringify(toppings));
+
+    data = data.map((item) => {
+      return { ...item, image: path + item.image };
+    });
+
+
     res.send({
       status: "success",
-      data: { toppings },
+      data: { data },
     });
   } catch (error) {
     console.log(error)
@@ -45,13 +53,26 @@ exports.getToppings = async (req, res) => {
 
 exports.getTopping = async (req, res) => {
   const { id } = req.params;
+  const path = process.env.PATH_FILE
+ 
   try {
-    const toppings = await topping.findOne({
+    let toppings = await topping.findOne({
       where: {
         id,
       },
       attributes: {
         exclude: ["idUser", "createdAt", "updatedAt"],
+      },
+    });
+
+    toppings = JSON.parse(JSON.stringify(toppings));
+    
+
+    res.send({
+      status: "success",
+      data: {
+        ...toppings,
+        image: path + products.image,
       },
     });
 

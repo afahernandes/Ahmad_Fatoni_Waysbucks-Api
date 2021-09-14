@@ -7,25 +7,34 @@ const {
   user,
 } = require("../../models");
 
+
+
 exports.addTransaction = async (req, res) => {
+  const path = process.env.PATH_FILE;
   try {
     const { body, user } = req;
+    console.log(body,user);
     const userId = user.id;
-    console.log("Product", body.products);
-
+  
+  
     const transactions = await transaction.create({
       ...body,
+      attachment:  req.file.filename,
+      status: "Waiting Approve",
       idUser: userId,
     });
-    console.log("TransactionID", transactions.id);
-    body.products.map(async (item) => {
+
+    console.log("prod",body.products)
+    JSON.parse(body.products).map(async (item) => {
       const { idProduct, qty } = item;
       console.log("item", item);
+
       const orders = await order.create({
         idTransaction: transactions.id,
         idProduct: idProduct,
         qty: qty,
       });
+    
 
       {
         item.toppings.map(async (items) => {
@@ -36,7 +45,7 @@ exports.addTransaction = async (req, res) => {
             idTopping: idTopping,
           });
         });
-      }
+     }
     });
 
     res.status(201).send({
@@ -55,35 +64,33 @@ exports.addTransaction = async (req, res) => {
 
 exports.getTransaction = async (req, res) => {
   try {
-    const {id}=req.params;
+    const { id } = req.params;
     const transactions = await transaction.findOne({
       where: {
-				id,
-			},
+        id,
+      },
       attributes: {
-        exclude: ["idUser","idTransaction", "createdAt", "updatedAt"],
+        exclude: ["idUser", "idTransaction", "createdAt", "updatedAt"],
       },
       include: [
         {
           model: user,
           as: "users",
           attributes: {
-            exclude: ["id","idUser", "password", "role", "createdAt", "updatedAt"],
+            exclude: [
+              "id",
+              "idUser",
+              "password",
+              "role",
+              "createdAt",
+              "updatedAt",
+            ],
           },
         },
         {
           model: order,
           as: "orders",
-          attributes: {
-            exclude: [
-              "id",
-              "idOrder",
-              "idTransaction",
-              "idProduct",
-              "createdAt",
-              "updatedAt",
-            ],
-          },
+          attributes: ["qty"],
           include: [
             {
               model: product,
@@ -120,11 +127,11 @@ exports.getTransaction = async (req, res) => {
       ],
     });
     res.send({
-			status: "success",
-			data: {
-				transactions,
-			},
-		});
+      status: "success",
+      data: {
+        transactions,
+      },
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -137,14 +144,24 @@ exports.getTransactions = async (req, res) => {
   try {
     const transactions = await transaction.findAll({
       attributes: {
-        exclude: ["idUser","idTransaction", "createdAt", "updatedAt"],
+        exclude: ["idUser", "idTransaction", "createdAt", "updatedAt"],
       },
+      order:[[
+        "createdAt","DESC" 
+      ]],
       include: [
         {
           model: user,
           as: "users",
           attributes: {
-            exclude: ["id","idUser", "password", "role", "createdAt", "updatedAt"],
+            exclude: [
+              "id",
+              "idUser",
+              "password",
+              "role",
+              "createdAt",
+              "updatedAt",
+            ],
           },
         },
         {
@@ -196,11 +213,11 @@ exports.getTransactions = async (req, res) => {
       ],
     });
     res.send({
-			status: "success",
-			data: {
-				transactions,
-			},
-		});
+      status: "success",
+      data: {
+        transactions,
+      },
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -211,20 +228,27 @@ exports.getTransactions = async (req, res) => {
 
 exports.getUserTransaction = async (req, res) => {
   try {
-    const {id}=req.user;
+    const { id } = req.user;
     const transactions = await transaction.findAll({
       where: {
-				idUser : id,
-			},
+        idUser: id,
+      },
       attributes: {
-        exclude: ["idUser","idTransaction", "createdAt", "updatedAt"],
+        exclude: ["idUser", "idTransaction", "updatedAt"],
       },
       include: [
         {
           model: user,
           as: "users",
           attributes: {
-            exclude: ["id","idUser", "password", "role", "createdAt", "updatedAt"],
+            exclude: [
+              "id",
+              "idUser",
+              "password",
+              "role",
+              "createdAt",
+              "updatedAt",
+            ],
           },
         },
         {
@@ -276,11 +300,11 @@ exports.getUserTransaction = async (req, res) => {
       ],
     });
     res.send({
-			status: "success",
-			data: {
-				transactions,
-			},
-		});
+      status: "success",
+      data: {
+        transactions,
+      },
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -289,21 +313,18 @@ exports.getUserTransaction = async (req, res) => {
   }
 };
 
-
 exports.updateTransaction = async (req, res) => {
-  const path = process.env.PATH_FILE
+  const path = process.env.PATH_FILE;
 
   try {
-    const {id } = req.params;
-    const data=req.body
-    
-    const newTransaction={
-      ...data,
-      attachment:req.file.filename,
-    }
-    
-    
-    console.log(req.body)
+    const { id } = req.params;
+    const body = req.body;
+
+    const newTransaction = {
+      ...body,
+    };
+
+    console.log(req.body);
 
     await transaction.update(newTransaction, {
       where: {
@@ -321,9 +342,8 @@ exports.updateTransaction = async (req, res) => {
     });
     res.send({
       status: "success",
-      data: {transactions },
+      data: { transactions },
     });
-
   } catch (error) {
     // console.log(error)
     res.status(500).send({
@@ -353,5 +373,3 @@ exports.deleteTransaction = async (req, res) => {
     });
   }
 };
-
-

@@ -85,7 +85,7 @@ exports.login = async (req, res) => {
     });
     if (!userExist) {
 			return res.status(400).json({
-				status: failed,
+				status: 'failed',
 				message: 'Your email or password is invalid',
 			});
 		}
@@ -101,7 +101,7 @@ exports.login = async (req, res) => {
 		let token = null;
 		if (userExist.role === "Administrator") {
       console.log('admin')
-			token = jwt.sign(payload, process.env.JWT_PRIVATE_KEY_A, {
+			token = jwt.sign(payload, process.env.JWT_PRIVATE_KEY, {
 				expiresIn: '24h',
 			});
 		} else {
@@ -115,12 +115,56 @@ exports.login = async (req, res) => {
       data: {
         fullname: userExist.fullname,
         email: userExist.email,
+        role: userExist.role,
+        image: userExist.image,
         token,
       },
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
+      status: "failed",
+      message: "Server Error",
+    });
+  }
+};
+
+exports.checkAuth = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const token = req.user;
+    console.log(req.user)
+
+    const dataUser = await user.findOne({
+      where: {
+        id,
+      },
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "password"],
+      },
+    });
+
+    if (!dataUser) {
+      return res.status(404).send({
+        status: "failed",
+      });
+    }
+
+    res.send({
+      status: "success",
+      data: {
+        user: {
+          id: dataUser.id,
+          fullname: dataUser.fullname,
+          email: dataUser.email,
+          role: dataUser.role,
+          token :token,
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status({
       status: "failed",
       message: "Server Error",
     });

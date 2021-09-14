@@ -1,9 +1,10 @@
 const { product } = require("../../models");
 
 exports.addPrduct = async (req, res) => {
-  try {
+   try {
     const { body } = req;
     const userId = req.user.id;
+    console.log("body",body);
 
     const newProduct = await product.create({
       ...body,
@@ -25,17 +26,26 @@ exports.addPrduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   try {
+    const path = process.env.PATH_FILE
+ 
     const products = await product.findAll({
       attributes: {
         exclude: ["idUser", "createdAt", "updatedAt"],
       },
     });
 
+   let data = JSON.parse(JSON.stringify(products));
+
+    data = data.map((item) => {
+      return { ...item, image: path + item.image };
+    });
+
     res.send({
       status: "success",
-      data: { products },
+      data: { data },
     });
   } catch (error) {
+    console.log(error)
     res.status(500).send({
       status: "failed get resources",
     });
@@ -43,9 +53,10 @@ exports.getProducts = async (req, res) => {
 };
 
 exports.getProduct = async (req, res) => {
+  const path = process.env.PATH_FILE
   const { id } = req.params;
   try {
-    const products = await product.findOne({
+    let products = await product.findOne({
       where: {
         id,
       },
@@ -54,11 +65,18 @@ exports.getProduct = async (req, res) => {
       },
     });
 
+    products = JSON.parse(JSON.stringify(products));
+    
+
     res.send({
       status: "success",
-      data: { products },
+      data: {
+        ...products,
+        image: path + products.image,
+      },
     });
   } catch (error) {
+    console.log(error)
     res.status(500).send({
       status: "failed",
     });
@@ -68,7 +86,8 @@ exports.getProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-
+    
+    
     await product.update(req.body, {
       where: {
         id,
@@ -85,7 +104,7 @@ exports.updateProduct = async (req, res) => {
     });
     res.send({
       status: "success",
-      prduct: { products },
+      product: { products },
     });
   } catch (error) {
     console.log(error);

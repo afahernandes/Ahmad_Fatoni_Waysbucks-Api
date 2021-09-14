@@ -23,7 +23,7 @@ exports.getUsers = async (req, res) => {
 
     res.send({
       status: "success",
-      data : { users,},
+      data: { users },
     });
   } catch (error) {
     res.status(500).send({
@@ -46,7 +46,7 @@ exports.getUser = async (req, res) => {
 
     res.send({
       status: "success",
-      data : {users},
+      data: { users },
     });
   } catch (error) {
     res.status(500).send({
@@ -55,19 +55,34 @@ exports.getUser = async (req, res) => {
   }
 };
 
+
 exports.updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { body } = req;
+    const id = req.user.id;
 
-    await user.update(req.body, {
+    const newUser = {
+      ...body,
+      image: req.file.filename,
+    };
+    await user.update(newUser, {
       where: {
         id,
       },
     });
 
+    let users = await user.findOne({
+      where: {
+        id,
+      },
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+    });
+
     res.send({
-      status: 'success',
-      id: id,
+      status: "success",
+      user: { users },
     });
   } catch (error) {
     console.log(error);
@@ -96,6 +111,29 @@ exports.deleteUser = async (req, res) => {
     res.send({
       status: "failed",
       status: "Server Error",
+    });
+  }
+};
+
+exports.getProfile = async (req, res) => {
+  const { id } = req.user;
+  try {
+    const users = await user.findOne({
+      where: {
+        id,
+      },
+      attributes: {
+        exclude: ["password", "createdAt", "updatedAt"],
+      },
+    });
+
+    res.status(200).send({
+      status: "success",
+      data: { users },
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "failed",
     });
   }
 };
