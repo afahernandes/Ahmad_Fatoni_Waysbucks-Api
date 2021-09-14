@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         },  
       });
     }
-  }
+  } 
   transaction.init(
     {
       name: DataTypes.STRING,

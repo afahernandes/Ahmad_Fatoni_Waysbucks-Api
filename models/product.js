@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
           name: "idUser",
         },
       });
-
+ 
       product.hasMany(models.order, {
         as: "orders",
         foreignKey: {

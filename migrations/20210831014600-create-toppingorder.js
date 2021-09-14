@@ -14,7 +14,7 @@ module.exports = {
         references: {
             model: 'toppings',
             key: 'id'
-        },
+        }, 
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
     },

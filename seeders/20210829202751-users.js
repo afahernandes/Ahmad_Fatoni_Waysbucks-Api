@@ -7,7 +7,7 @@ module.exports = {
       [
         {
           fullname: "Administrator",
-          email: "admin@gmail.com",
+          email: "admin@gmail.com", 
           password: "$2b$10$d9jZ3wsdSezOecV2Hr9VUO88i3wtPv5gYNpUOxTbdcCT8.2CiWqOO",
           role: "Administrator",
           image: "Avatar.jpg",

@@ -114,7 +114,6 @@ exports.deleteUser = async (req, res) => {
     });
   }
 };
-
 exports.getProfile = async (req, res) => {
   const { id } = req.user;
   try {

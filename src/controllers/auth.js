@@ -149,7 +149,7 @@ exports.checkAuth = async (req, res) => {
         status: "failed",
       });
     }
-
+    
     res.send({
       status: "success",
       data: {

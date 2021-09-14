@@ -67,7 +67,6 @@ exports.getProduct = async (req, res) => {
 
     products = JSON.parse(JSON.stringify(products));
     
-
     res.send({
       status: "success",
       data: {

@@ -224,8 +224,7 @@ exports.getTransactions = async (req, res) => {
       status: "failed",
     });
   }
-};
-
+}; 
 exports.getUserTransaction = async (req, res) => {
   try {
     const { id } = req.user;

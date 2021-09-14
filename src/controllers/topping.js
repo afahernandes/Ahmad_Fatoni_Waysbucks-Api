@@ -2,7 +2,6 @@ const { topping } = require("../../models");
 
 exports.addTopping = async (req, res) => {
   try {
-
     const {body} = req;
 		const idUser = req.user.id;
     
